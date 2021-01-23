@@ -61,12 +61,19 @@
                 // Add Y and X axes
                 const y = d3.scaleLinear().range([height, 0]);
 
-                const yAxis = d3.axisLeft(y).ticks(0);
+                // const yAxis = d3.axisLeft(y).ticks(0);
 
 
                 const x = d3.scaleTime()
                     .domain(d3.extent(data, function(d) {return (d.dates);}))
                     .range([ 0, width ]);
+
+                // Calculate spacing for x coordinates to avoid overlap
+                let prev_x = -100;
+                data.forEach(function(d) {
+                    d.x = Math.max(prev_x+24, x(d.dates));
+                    prev_x = d.x;
+                });
 
                 const xAxis = d3.axisBottom(x)
                     .tickFormat(timeFormat);
@@ -75,8 +82,8 @@
                     .attr('transform', "translate(0," + height + ")")
                     .call(xAxis);
 
-                svg.append('g')
-                    .call(yAxis)
+                // svg.append('g')
+                //     .call(yAxis)
 
                 //Convict name tooltip (applied to line, circle and date)
                 // https://stackoverflow.com/questions/10805184/show-data-on-mouseover-of-circle
@@ -101,13 +108,15 @@
                     .attr("stroke", "black")
                     .attr("stroke-width", 1)
                     .attr("d", d3.line()
-                        .x(function(d) { return x(d.dates) })
+                        .x(function(d) { return d.x })
                         .y(function(d) { return y(d.yValue) })
                     )
                     .on("mouseover", function(){return tooltip.style("visibility", "visible");})
                     .on("mousemove", function(){return tooltip.style("top",
                         (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");})
                     .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
+
+
 
 
                 svg.append('g')
@@ -143,7 +152,7 @@
                     .append("text")
                     .text(d =>  niceTimeFormat(d.dates))
                     .attr('transform', (d)=>{
-                        return 'translate( '+(x(d.dates)+6)+' , '+(height-56)+'),'+ 'rotate(-90)';})
+                        return 'translate( '+(d.x+4)+' , '+(height-56)+'),'+ 'rotate(-90)';})
                     .attr('x', 0)
                     .attr('y', 0)
                     .on("mouseover", function(){return tooltip.style("visibility", "visible");})
@@ -156,9 +165,16 @@
                     .data(data)
                     .enter()
                     .append('text')
-                    .text(d => d.eventDescription)
+                    .text(d => {
+                        if(d.eventDescription.length >= 50) {
+                            const short = d.eventDescription.substring(0,50);
+                            const pos = short.lastIndexOf(" ");
+                            return d.eventDescription.substring(0,pos)+' ...';
+                        } else {
+                            return d.eventDescription;
+                        }})
                     .attr('transform', (d)=>{
-                        return 'translate( '+(x(d.dates)-2)+' , '+(height/2+22)+'),'+ 'rotate(-30)';})
+                        return 'translate( '+(d.x-2)+' , '+(height/2+15)+'),'+ 'rotate(-30)';})
                     .attr('x', 0)
                     .attr('y', 0)
                     .on("mouseover", function(d) {
@@ -175,7 +191,26 @@
                             .style("opacity", 0);
                     });
 
-
+                data.forEach(function(d) {
+                    svg.append('line')
+                        .attr("fill", "none")
+                        .attr("stroke", "black")
+                        .attr("stroke-width", 1)
+                        .attr("x1", x(d.dates))
+                        .attr("y1", y(d.yValue)+4)
+                        .attr("x2", d.x)
+                        .attr("y2", y(d.yValue)+20)
+                    ;
+                    svg.append('line')
+                        .attr("fill", "none")
+                        .attr("stroke", "black")
+                        .attr("stroke-width", 1)
+                        .attr("x1", x(d.dates))
+                        .attr("y1", y(d.yValue)-4)
+                        .attr("x2", d.x)
+                        .attr("y2", y(d.yValue)-20)
+                    ;
+                });
             }
         },
         mounted() {
