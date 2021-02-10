@@ -8,34 +8,34 @@
         </div>
         <div class="col-sm-4 p-3 mb-2">
           <div class="form-group row">
-            <label for="GivenName" class="col-sm-5 col-for-label">Enter Given Name</label>
+            <label for="GivenName" class="col-sm-5 col-for-label mt-2">Enter Given Name</label>
             <div class="col-sm-6">
               <input type="text" class="form-control" id="givenName" placeholder="Given Name">
             </div>
             </div>
           <div class="form-group row">
-            <label for="FamilyName" class="col-sm-5 col-for-label">Enter Family Name</label>
+            <label for="FamilyName" class="col-sm-5 col-for-label mt-2">Enter Family Name</label>
             <div class="col-sm-6">
               <input type="text" class="form-control" id="familyName" placeholder="Family Name">
             </div>
           </div>
           <div class="form-group row">
-            <label for="ConvictId" class="col-sm-5 col-for-label">Enter Convict Id</label>
+            <label for="ConvictId" class="col-sm-5 col-for-label mt-2">Enter Convict Id</label>
             <div class="col-sm-6">
               <input type="text" class="form-control" id="convictId" placeholder="Convict Id"
-                     v-model="convictId[0]">
+                     v-model="convictId">
             </div>
           </div>
           <div class="row justify-content-center">
-            <div class="col-sm-4 ">
-              <button type="submit" class="btn btn-primary" v-on:click="findLifeline">Find Lifeline</button>
+            <div class="col-sm-6 ml-4">
+              <button type="submit" class="btn btn-primary" v-on:click="selectLifeline">Find Lifeline</button>
             </div>
           </div>
         </div>
       </div>
     </div>
     <Description :specs="specs"></Description>
-    <Lifeline :lifeline="lifeline" :specs="specs"></Lifeline>
+    <Lifeline @selectVoyage="selectVoyage" :selectedLifelines="selectedLifelines" :specs="specs"></Lifeline>
   </div>
 </template>
 
@@ -66,16 +66,56 @@ export default {
   data() {
     return {
       nominal: [],
-      lifelines: [],
-      convictId: ['9742', '8178'],
+      lifelines: {},
+      voyages: {},
+      persons: {},
+      given_to_family_name: {},
+      family_to_given_name: {},
+      convictId: '',
+      // Elizabeth Studham and Elizabeth Parker
+      // selectedConvictIds: ['8717', '5304'],
+      // Insubordination charge of 6/5/1839 Cascades Factory
+      // selectedConvictIds: ["9615","9614","9900","9284","6782","8647","13065","12904","9552","9525","12782","12846","7924","6071","9070","H299At","12842","1210","10023","M269At","1976","1163","12840","12789","12870","9542","6772","4074","12906","6064","12776","9847","1911","679","T135At","12856","8624","S328At","S329At","9967","1910","1901"],
+      // Collective Resistance of 18/10/1837 Launceston FF
+      //selectedConvictIds: ['5280', '6689', '13293', '4233', '9834', '4041', '4008', '8710', '6782', '9857', '5319', '4057', '4127', '4063', '1954'],
+      selectedConvictIds: [ '4233', '5280'],
       specs: [],
-      lifeline: [],
+      selectedLifelines: [],
     }
   },
   methods: {
+    selectLifeline: function() {
+      this.selectedConvictIds = [this.convictId];
+      this.findLifeline();
+    },
     findLifeline: function() {
-      this.lifeline = this.lifelines.filter((x) => x.ConvictId === this.convictId[0]);
-      this.specs = this.nominal.filter((x) => x.ConvictId === this.convictId[0]);
+      // this.selectedLifelines = this.selectedConvictIds.map(cid =>
+      //         this.lifelines.filter((x) => x.ConvictId === cid));
+      let sel = [];
+      this.selectedConvictIds.forEach(cid => {
+        sel.push(this.lifelines[cid]);
+      });
+      this.selectedLifelines = sel;
+
+      this.specs = this.nominal.filter((x) => x.ConvictId === this.selectedConvictIds[0]);
+    },
+    selectVoyage: function(vid) {
+      // const allConvictIds = this.lifelines.filter((x) => x.VoyageId === vid)
+      //         .map((x) => x.ConvictId);
+      // this.selectedConvictIds = allConvictIds.sort().filter(function(item, pos, ary) {
+      //   return pos===0 || item != ary[pos - 1];
+      // });
+      this.selectedConvictIds = Array.from(this.voyages[vid]);
+      this.findLifeline();
+    },
+    selectPerson: function(pid) {
+      // const allConvictIds = this.lifelines.filter((x) => x.Person === pid)
+      //         .map((x) => x.Person);
+      // this.selectedConvictIds = allConvictIds.sort().filter(function(item, pos, ary) {
+      //   return pos===0 || item != ary[pos - 1];
+      // });
+      this.selectedConvictIds = Array.from(this.persons[pid]);
+      this.findLifeline();
     }
   },
   mounted() {
@@ -85,18 +125,66 @@ export default {
         data[i].newDate = new Date(data[i].Date);
         data[i].eventDescription = data[i].Event;
       }
-      this.lifelines = data;
-      this.lifeline = this.lifelines.filter((x) => x.ConvictId === this.convictId[0]);
+      this.lifelines = {};
+      this.voyages = {};
+      this.persons = {};
+      data.forEach((d) => {
+        if (!(d.ConvictId in this.lifelines)) {
+          this.lifelines[d.ConvictId] = [];
+        }
+        this.lifelines[d.ConvictId].push(d);
+        if (d.VoyageId !== '') {
+          if (!(d.VoyageId in this.voyages)) {
+            this.voyages[d.VoyageId] = new Set();
+          }
+          this.voyages[d.VoyageId].add(d.ConvictId);
+        }
+        if (d.Person!== '') {
+          if (!(d.Person in this.persons)) {
+            this.persons[d.Person] = new Set();
+          }
+          this.persons[d.Person].add(d.ConvictId);
+        }
+      });
 
-      // this.lifelines = this.convictId.map(cid =>
+      let sel = [];
+      this.selectedConvictIds.forEach(cid => {
+        sel.push(this.lifelines[cid]);
+      });
+      this.selectedLifelines = sel;
+
+      // this.selectedLifelines = this.events.filter((x) => x.ConvictId === this.selectedConvictIds[0]);
+      // this.selectedLifelines = this.selectedConvictIds.map(cid =>
       //         this.lifelines.filter((x) => x.ConvictId === cid));
-
     }
 
     var loadNominal = data => {
       this.nominal = data;
-      this.specs = data.filter((x) => x.ConvictId === this.convictId[0]);
+      this.given_to_family_name = {};
+      this.family_to_given_name = {};
+      this.nominal.forEach((d) => {
+        if (!(d.GivenNames in this.given_to_family_name)) {
+          this.given_to_family_name[d.GivenNames] = {};
+        }
+        if (!(d.FamilyName in this.given_to_family_name[d.GivenNames])) {
+          this.given_to_family_name[d.GivenNames][d.FamilyName] = [];
+        }
+        this.given_to_family_name[d.GivenNames][d.FamilyName].push(d.ConvictId);
 
+        // { "Anna" : { "Smith" : [1,2,3], "Jones" : [4,5,6] } }
+
+        if (!(d.FamilyName in this.family_to_given_name)) {
+          this.family_to_given_name[d.FamilyName] = {};
+        }
+        if (!(d.GivenNames in this.family_to_given_name[d.FamilyName])) {
+          this.family_to_given_name[d.FamilyName][d.GivenNames] = [];
+        }
+        this.family_to_given_name[d.FamilyName][d.GivenNames].push(d.ConvictId);
+
+        // { "Smith" : { "Anna" : [1,2,3], "Maria" : [4,5,6] } }
+      });
+
+      this.specs = data.filter((x) => x.ConvictId === this.selectedConvictIds[0]);
     }
 
     d3.csv(process.env.BASE_URL + "lifelines.csv").then(loadLifelines);
