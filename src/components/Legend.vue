@@ -15,7 +15,7 @@
                         <div>Trial</div>
                         <div>Voyage</div>
                         <div>Freedoms</div>
-                        <div>Marriage or Permission to mary</div>
+                        <div>Marriage or Permission to marry</div>
                     </div>
 
                 </div>
