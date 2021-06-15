@@ -65,6 +65,12 @@
             drawAnchor(svg, x, y) {
                 let g = svg.append('g');
                 g.attr('transform','translate('+x+','+y+') scale(0.025 0.025) ');
+                g.append('rect')
+                    .attr("width", 512)
+                    .attr("height", 512)
+                    .attr("x", 0)
+                    .attr("y", 0)
+                    .attr("fill", "transparent");
                 let p = g.append('path');
                 p.attr('fill', '#000000');
                 p.attr('d', "M12.971 352h32.394C67.172 454.735 181.944 512 288 512c106.229 0 220.853-57.38 242.635-160h32.394c10.691 0 16.045-12.926 8.485-20.485l-67.029-67.029c-4.686-4.686-12.284-4.686-16.971 0l-67.029 67.029c-7.56 7.56-2.206 20.485 8.485 20.485h35.146c-20.29 54.317-84.963 86.588-144.117 94.015V256h52c6.627 0 12-5.373 12-12v-40c0-6.627-5.373-12-12-12h-52v-5.47c37.281-13.178 63.995-48.725 64-90.518C384.005 43.772 341.605.738 289.37.01 235.723-.739 192 42.525 192 96c0 41.798 26.716 77.35 64 90.53V192h-52c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h52v190.015c-58.936-7.399-123.82-39.679-144.117-94.015h35.146c10.691 0 16.045-12.926 8.485-20.485l-67.029-67.029c-4.686-4.686-12.284-4.686-16.971 0L4.485 331.515C-3.074 339.074 2.28 352 12.971 352zM288 64c17.645 0 32 14.355 32 32s-14.355 32-32 32-32-14.355-32-32 14.355-32 32-32z");
@@ -386,15 +392,23 @@
 
 
                     lifeline["events"].forEach( (d) => {
-                        var symbol;
+                        var symbol, symX, symY;
                         if (d.Source === "Transportation Crime and Trial Records V1") {
-                            symbol = this.drawGavel(svg, x(d.dates) - 6, y(d.yValue) - 15);
+                            symX = x(d.dates) - 6;
+                            symY = y(d.yValue) - 15;
+                            symbol = this.drawGavel(svg, symX, symY);
                         } else if (d.Source === "PermissionToMarryRecordsV1" || d.Source === "MarriageRecordsV1") {
-                            symbol = this.drawHeart(svg, x(d.dates) - 6, y(d.yValue) - 12);
+                            symX = x(d.dates) - 6;
+                            symY = y(d.yValue) - 12;
+                            symbol = this.drawHeart(svg, symX, symY);
                         } else if (d.Source === "FAS DB Download") {
-                            symbol = this.drawAnchor(svg, x(d.dates) - 7, y(d.yValue) - 13);
+                            symX = x(d.dates) - 7;
+                            symY = y(d.yValue) - 13;
+                            symbol = this.drawAnchor(svg, symX, symY);
                         } else if (d.Source === "FreedomsV4") {
-                            symbol = this.drawSquare(svg, x(d.dates) - 0, y(d.yValue) - 13);
+                            symX = x(d.dates) - 0;
+                            symY = y(d.yValue) - 13;
+                            symbol = this.drawSquare(svg, symX, symY);
                         } else {
                                 symbol = svg.append('circle')
                                     .attr('cx', function () {
@@ -414,7 +428,7 @@
                                     .attr('stroke', 'black')
                             }
 
-                        symbol.on('click', function () {
+                        symbol.on('click', () => {
                                if (d.VoyageId !== '') {
                                    this.$emit('selectVoyage', d.VoyageId);
                                } else if (d.Person !== '') {
@@ -427,12 +441,16 @@
                                d3.select(this).style("cursor", "pointer");
                                if (d.VoyageId !== '' || d.Person !== '') {
                                    // console.log("d", d);
-                                   d3.select(this).attr('r', 8);
+                                   // d3.select(this).attr('r', 8);
+                                   symbol.attr('transform','translate('+(symX - 2)+','+(symY - 2)+') scale(0.035 0.035)');
                                }
                            })
-                           .on("mouseout", function () {
+                           .on("mouseout", function() {
                                d3.select(this).style("cursor", "default");
-                               d3.select(this).attr('r', 5);
+                               if (d.VoyageId !== '' || d.Person !== '') {
+                                   // d3.select(this).attr('r', 5);
+                                   symbol.attr('transform', 'translate(' + symX + ',' + symY + ') scale(0.025 0.025)');
+                               }
                            });
                     });
 
