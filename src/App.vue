@@ -2,7 +2,7 @@
   <div id="app">
     <div class="container-fluid  bg-secondary text-white rounded-0">
       <div class="row">
-        <div class="col-sm-8 p-3 mb-2">
+        <div class="col-sm-8 p-4 mb-2">
           <h1 class="Font-weight-bold">LifeLines</h1>
           <h4 class="font-italic font-weight-bold">Explore Convict Lives</h4>
         </div>
@@ -35,10 +35,10 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-sm-4 p-3 mb-2">
+      <div class="col-sm-4 p-4 mb-2">
         <Description :specs="specs"></Description>
       </div>
-      <div class="col-sm-8 p-3 mb-2">
+      <div class="col-sm-8 p-4 mb-2">
         <Legend></Legend>
       </div>
     </div>
@@ -113,7 +113,7 @@ export default {
       });
       this.selectedLifelines = sel;
 
-      this.specs = this.nominal.filter((x) => x.ConvictId === this.selectedConvictIds[0]);
+      this.specs = this.nominal.filter((x) => x.ConvictId === this.selectedConvictIds[this.selectedConvictIds.length-1]);
     },
     selectVoyage: function(vid) {
       // const allConvictIds = this.lifelines.filter((x) => x.VoyageId === vid)
@@ -217,6 +217,10 @@ export default {
       });
 
 
+      // console.log("lll", this.lifelines, this.selectedLifelines);
+      this.specs = data.filter((x) => x.ConvictId === this.selectedConvictIds[this.selectedConvictIds.length-1]);
+
+
 
       d3.csv(process.env.BASE_URL + "colonialSentences.csv").then(loadSentences).catch(console.log.bind(console));
     }
@@ -253,8 +257,6 @@ export default {
       });
       this.selectedLifelines = sel;
 
-      // console.log("lll", this.lifelines, this.selectedLifelines);
-      this.specs = data.filter((x) => x.ConvictId === this.selectedConvictIds[0]);
 
     }
 

@@ -190,16 +190,6 @@
                 // svg.append('g')
                 //     .call(yAxis)
 
-                // Doesn't work, but no longer needed anyway
-                // Convict name tooltip (applied to line, circle and date)
-                // https://stackoverflow.com/questions/10805184/show-data-on-mouseover-of-circle
-                const tooltip = d3.select("body")
-                    .append("div")
-                    .style("position", "absolute")
-                    .style("z-index", "10")
-                    .style("visibility", "hidden")
-                    .attr("class", "tooltip")
-                    .text(this.convictName);
 
                 // Event description tooltip (applied to event)
                 // https://gist.github.com/d3noob/4e4485d94aebf63ae8059258c40f2609
@@ -222,17 +212,7 @@
                             .y(function (d) {
                                 return y(d.yValue)
                             })
-                        )
-                        .on("mouseover", function () {
-                            return tooltip.style("visibility", "visible");
-                        })
-                        .on("mousemove", function () {
-                            return tooltip.style("top",
-                                (d3.event.pageY - 10) + "px").style("left", (d3.event.pageX + 10) + "px");
-                        })
-                        .on("mouseout", function () {
-                            return tooltip.style("visibility", "hidden");
-                        });
+                        );
 
                     // Draw more lines
                     lifeline["events"].forEach(function (d) {
@@ -348,7 +328,25 @@
                         })
                         .attr('height', 8)
                         .attr('fill', (d) => {return this.sentenceColor[d.numericCode]})
-                        .attr('stroke', 'black');
+                        .attr('stroke', 'black')
+                        .on("mouseover", function (d) {
+                        div.transition()
+                            .duration(200)
+                            .style("opacity", 1);
+                        div.html(function() {
+                            if (!isNaN(d.Extension)) {
+                                return d.Days + " days " + d.SentenceCat;
+                            } else {
+                                return d.Days + " days " + d.SentenceCat + " (sentence extended)";
+                            }})
+                            .style("left", (d3.event.pageX) + "px")
+                            .style("top", (d3.event.pageY - 40) + "px");
+                    })
+                        .on("mouseout", function () {
+                            div.transition()
+                                .duration(500)
+                                .style("opacity", 0);
+                        });
 
 
                     // Draw confinement rectangles beneath lifeline
@@ -366,7 +364,25 @@
                             } else {return x(d.cleanStartDate) + 40}})
                         .attr('height', 8)
                         .attr('fill', (d) => {return this.sentenceColor[d.numericCode]})
-                        .attr('stroke', 'black');
+                        .attr('stroke', 'black')
+                        .on("mouseover", function (d) {
+                            div.transition()
+                                .duration(200)
+                                .style("opacity", 1);
+                            div.html(function() {
+                                if (!isNaN(d.Extension)) {
+                                    return d.Days + " days " + d.SentenceCat;
+                                } else {
+                                    return d.Days + " days " + d.SentenceCat + " (sentence extended)";
+                                }})
+                                .style("left", (d3.event.pageX) + "px")
+                                .style("top", (d3.event.pageY - 40) + "px");
+                        })
+                        .on("mouseout", function () {
+                            div.transition()
+                                .duration(500)
+                                .style("opacity", 0);
+                        });
 
 
                     lifeline["events"].forEach( (d) => {
@@ -476,17 +492,7 @@
                             return 'translate( ' + (d.x + 4) + ' , ' + (y(d.yValue)+88) + '),' + 'rotate(-90)';
                         })
                         .attr('x', 0)
-                        .attr('y', 0)
-                        .on("mouseover", function () {
-                            return tooltip.style("visibility", "visible");
-                        })
-                        .on("mousemove", function () {
-                            return tooltip.style("top",
-                                (d3.event.pageY - 10) + "px").style("left", (d3.event.pageX + 10) + "px");
-                        })
-                        .on("mouseout", function () {
-                            return tooltip.style("visibility", "hidden");
-                        });
+                        .attr('y', 0);
 
                     // Draw the event description on top of the line
                     svg.append('g')
