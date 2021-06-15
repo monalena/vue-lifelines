@@ -2,7 +2,25 @@
     <div class="col-sm-12 ml-40" id="legend">
         <h5>Legend</h5>
         <div class="row">
-            <div class="col-sm-5 ml-4">
+            <div class="col-sm-3 ml-4">
+                <h6>Life Events</h6>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <div><img src=".././assets/gavel-solid.svg" height="15"></div>
+                        <div><img src=".././assets/anchor-solid.svg" height="13"></div>
+                        <div><img src=".././assets/square-solid.svg" height="12" style="transform:rotate(45deg);"></div>
+                        <div><img src=".././assets/heart-solid.svg" height="13"></div>
+                    </div>
+                    <div class="col-sm-10">
+                        <div>Trial</div>
+                        <div>Voyage</div>
+                        <div>Freedoms</div>
+                        <div>Marriage or Permission to mary</div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-sm-4 ml-4">
                 <h6>Offences against</h6>
                 <div class="row">
                     <div class="col-sm-2">
@@ -22,7 +40,7 @@
 
                 </div>
             </div>
-            <div class="col-sm-5 ml-4">
+            <div class="col-sm-3 ml-4">
                 <h6>Sentences</h6>
                 <div class="row">
                     <div class="col-sm-2">
@@ -82,6 +100,13 @@
         width: 10px;
         border-radius: 10%;
         display: inline-block;
+    }
+    .rotate90 {
+        -webkit-transform: rotate(90deg);
+        -moz-transform: rotate(90deg);
+        -o-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        transform: rotate(90deg);
     }
     #I {
         background-color: #EFB366;

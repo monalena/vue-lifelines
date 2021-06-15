@@ -1,8 +1,5 @@
 <template>
     <div>
-        <!--<font-awesome-icon icon="gavel" />-->
-        <!--<font-awesome-icon icon="heart" />-->
-        <!--<font-awesome-icon icon="cut" />-->
         <div id="chart"></div>
     </div>
 </template>
@@ -46,13 +43,40 @@
             parseName: function(data) {
                 this.convictName = data[0].GivenNames + " " + data[0].FamilyName;
             },
-
+            // helper function to draw gavel onto lifelines vis (since vue-font awesome can't be brought into d3 code)
             drawGavel(svg, x, y) {
                 let g = svg.append('g');
                 g.attr('transform','translate('+x+','+y+') scale(0.03 0.03) ');
                 let p = g.append('path');
                 p.attr('fill', '#000000');
                 p.attr('d', "M504.971 199.362l-22.627-22.627c-9.373-9.373-24.569-9.373-33.941 0l-5.657 5.657L329.608 69.255l5.657-5.657c9.373-9.373 9.373-24.569 0-33.941L312.638 7.029c-9.373-9.373-24.569-9.373-33.941 0L154.246 131.48c-9.373 9.373-9.373 24.569 0 33.941l22.627 22.627c9.373 9.373 24.569 9.373 33.941 0l5.657-5.657 39.598 39.598-81.04 81.04-5.657-5.657c-12.497-12.497-32.758-12.497-45.255 0L9.373 412.118c-12.497 12.497-12.497 32.758 0 45.255l45.255 45.255c12.497 12.497 32.758 12.497 45.255 0l114.745-114.745c12.497-12.497 12.497-32.758 0-45.255l-5.657-5.657 81.04-81.04 39.598 39.598-5.657 5.657c-9.373 9.373-9.373 24.569 0 33.941l22.627 22.627c9.373 9.373 24.569 9.373 33.941 0l124.451-124.451c9.372-9.372 9.372-24.568 0-33.941z");
+                return g;
+            },
+            // helper function to draw heart onto lifelines vis
+            drawHeart(svg, x, y) {
+                let g = svg.append('g');
+                g.attr('transform','translate('+x+','+y+') scale(0.025 0.025) ');
+                let p = g.append('path');
+                p.attr('fill', '#000000');
+                p.attr('d', "M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z");
+                return g;
+            },
+            // helper function to draw anchors onto lifelines vis
+            drawAnchor(svg, x, y) {
+                let g = svg.append('g');
+                g.attr('transform','translate('+x+','+y+') scale(0.025 0.025) ');
+                let p = g.append('path');
+                p.attr('fill', '#000000');
+                p.attr('d', "M12.971 352h32.394C67.172 454.735 181.944 512 288 512c106.229 0 220.853-57.38 242.635-160h32.394c10.691 0 16.045-12.926 8.485-20.485l-67.029-67.029c-4.686-4.686-12.284-4.686-16.971 0l-67.029 67.029c-7.56 7.56-2.206 20.485 8.485 20.485h35.146c-20.29 54.317-84.963 86.588-144.117 94.015V256h52c6.627 0 12-5.373 12-12v-40c0-6.627-5.373-12-12-12h-52v-5.47c37.281-13.178 63.995-48.725 64-90.518C384.005 43.772 341.605.738 289.37.01 235.723-.739 192 42.525 192 96c0 41.798 26.716 77.35 64 90.53V192h-52c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h52v190.015c-58.936-7.399-123.82-39.679-144.117-94.015h35.146c10.691 0 16.045-12.926 8.485-20.485l-67.029-67.029c-4.686-4.686-12.284-4.686-16.971 0L4.485 331.515C-3.074 339.074 2.28 352 12.971 352zM288 64c17.645 0 32 14.355 32 32s-14.355 32-32 32-32-14.355-32-32 14.355-32 32-32z");
+                return g;
+            },
+            // helper function to draw certificate onto lifelines vis
+            drawSquare(svg, x, y) {
+                let g = svg.append('g');
+                g.attr('transform','translate('+x+','+y+') rotate(45) scale(0.02 0.02) ');
+                let p = g.append('path');
+                p.attr('fill', '#000000');
+                p.attr('d', "M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48z");
                 return g;
             },
 
@@ -83,6 +107,7 @@
                             max_date = d.dates;
                         }
                     });
+                    // also do conversion for sentences and confinement
                     lifeline["sentences"].forEach(function(d) {
                         d.yValue = 0.4+lifeline_idx;
                     });
@@ -235,7 +260,6 @@
 
 
                     // Draw line to extend lifeline to left (before trial)
-                    // TODO: Eventually replace by drawing to birth year if known
                     svg.append('line')
                         .attr("fill", "none")
                         .attr("stroke", "black")
@@ -247,7 +271,7 @@
                         .style("stroke-dasharray", ("4, 4"))
                     ;
                     // Draw line to extend lifeline to right (before trial)
-                    // Temporary solution to omit death info and have this instead
+                    // Temporary solution? to omit death info and have this instead
                     svg.append('line')
                         .attr("fill", "none")
                         .attr("stroke", "black")
@@ -298,7 +322,6 @@
                         .style("stroke-dasharray", ("4, 4"))
                     ;
                     // Draw line to extend lifeline to right (before trial)
-                    // Temporary solution to omit death info and have this instead
                     svg.append('line')
                         .attr("fill", "none")
                         .attr("stroke", "black")
@@ -309,6 +332,8 @@
                         .attr("y2", y(lifeline["events"][lifeline["events"].length - 1 ].yValue) + 16)
                         .style("stroke-dasharray", ("4, 4"))
                     ;
+
+
                     // Draw sentence rectangles beneath lifeline
                     svg.append('g')
                         .selectAll('time-span-rect')
@@ -325,6 +350,7 @@
                         .attr('height', 8)
                         .attr('fill', (d) => {return this.sentenceColor[d.numericCode]})
                         .attr('stroke', 'black');
+
 
                     // Draw confinement rectangles beneath lifeline
                     svg.append('g')
@@ -347,25 +373,32 @@
                     lifeline["events"].forEach( (d) => {
                         var symbol;
                         if (d.Source === "Transportation Crime and Trial Records V1") {
-                            symbol = this.drawGavel(svg, x(d.dates) - 3, y(d.yValue) - 12);
+                            symbol = this.drawGavel(svg, x(d.dates) - 6, y(d.yValue) - 15);
+                        } else if (d.Source === "PermissionToMarryRecordsV1" || d.Source === "MarriageRecordsV1") {
+                            symbol = this.drawHeart(svg, x(d.dates) - 6, y(d.yValue) - 12);
+                        } else if (d.Source === "FAS DB Download") {
+                            symbol = this.drawAnchor(svg, x(d.dates) - 7, y(d.yValue) - 13);
+                        } else if (d.Source === "FreedomsV4") {
+                            symbol = this.drawSquare(svg, x(d.dates) - 0, y(d.yValue) - 13);
                         } else {
-                            symbol = svg.append('circle')
-                                .attr('cx', function () {
-                                    return x(d.dates);
-                                })
-                                .attr('cy', function () {
-                                    return y(d.yValue) -6;
-                                })
-                                .attr('r', function () {
-                                    return 5;
-                                })
-                                .attr('fill', () => {
-                                    return d.Source in this.offenceColor ? this.offenceColor[d.Source] : "#000000";
-                                })
-                                //.style('fill', 'black')//'#69b3a2'
-                                .style('opacity', '1')
-                                .attr('stroke', 'black');
-                        }
+                                symbol = svg.append('circle')
+                                    .attr('cx', function () {
+                                        return x(d.dates);
+                                    })
+                                    .attr('cy', function () {
+                                        return y(d.yValue) -6;
+                                    })
+                                    .attr('r', function () {
+                                        return 5;
+                                    })
+                                    .attr('fill', () => {
+                                        return d.Source in this.offenceColor ? this.offenceColor[d.Source] : "#000000";
+                                    })
+                                    //.style('fill', 'black')//'#69b3a2'
+                                    .style('opacity', '1')
+                                    .attr('stroke', 'black')
+                            }
+
                         symbol.on('click', function () {
                                if (d.VoyageId !== '') {
                                    this.$emit('selectVoyage', d.VoyageId);

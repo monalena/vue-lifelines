@@ -5,7 +5,6 @@
         <div class="col-sm-8 p-3 mb-2">
           <h1 class="Font-weight-bold">LifeLines</h1>
           <h4 class="font-italic font-weight-bold">Explore Convict Lives</h4>
-          <img src="./assets/gavel-solid.svg" height="16"/>
         </div>
         <div class="col-sm-4 p-3 mb-2">
           <div class="form-group row">
@@ -36,10 +35,10 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-sm-5 p-3 mb-2">
+      <div class="col-sm-4 p-3 mb-2">
         <Description :specs="specs"></Description>
       </div>
-      <div class="col-sm-6 p-3 mb-2">
+      <div class="col-sm-8 p-3 mb-2">
         <Legend></Legend>
       </div>
     </div>
