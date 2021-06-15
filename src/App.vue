@@ -235,10 +235,10 @@ export default {
 
       data.forEach((d) => {
         if (d.ConvictId in this.lifelines) {
-          if (factory.has(d.numericCode)){
+          if (factory.has(d.numericCode) && !isNaN(d.cleanEndDate)){
             this.lifelines[d.ConvictId]["sentences"].push(d);
           }
-          if (confinement.has(d.numericCode)){
+          if (confinement.has(d.numericCode) && !isNaN(d.cleanEndDate)){
             this.lifelines[d.ConvictId]["confinement"].push(d);
           }
 

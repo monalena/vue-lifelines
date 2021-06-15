@@ -344,9 +344,8 @@
                         .attr('x', function(d) {return x(d.cleanStartDate)})
                         .attr('y', function(d) {return y(d.yValue) + 0 })
                         .attr('width', function(d) {
-                            if (!isNaN(d.cleanEndDate)) {
-                                return x(d.cleanEndDate) - x(d.cleanStartDate)
-                            } else {return x(d.cleanStartDate) + 40}})
+                            return x(d.cleanEndDate) - x(d.cleanStartDate)
+                        })
                         .attr('height', 8)
                         .attr('fill', (d) => {return this.sentenceColor[d.numericCode]})
                         .attr('stroke', 'black');
