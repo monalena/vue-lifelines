@@ -1,8 +1,8 @@
 <template>
-    <div class="col-sm-12 ml-40" id="legend">
+    <div class="col-sm-12 m-1 p-1" id="legend">
         <h5>Legend</h5>
         <div class="row">
-            <div class="col-sm-3 ml-4">
+            <div class="col-sm-3 ml-3">
                 <h6>Life Events</h6>
                 <div class="row">
                     <div class="col-sm-2">
@@ -20,7 +20,7 @@
 
                 </div>
             </div>
-            <div class="col-sm-4 ml-4">
+            <div class="col-sm-4 ml-3">
                 <h6>Offences against</h6>
                 <div class="row">
                     <div class="col-sm-2">
@@ -40,7 +40,7 @@
 
                 </div>
             </div>
-            <div class="col-sm-3 ml-4">
+            <div class="col-sm-4 ml-3">
                 <h6>Sentences</h6>
                 <div class="row">
                     <div class="col-sm-2">
@@ -100,13 +100,6 @@
         width: 10px;
         border-radius: 10%;
         display: inline-block;
-    }
-    .rotate90 {
-        -webkit-transform: rotate(90deg);
-        -moz-transform: rotate(90deg);
-        -o-transform: rotate(90deg);
-        -ms-transform: rotate(90deg);
-        transform: rotate(90deg);
     }
     #I {
         background-color: #EFB366;

@@ -557,6 +557,7 @@
                             .on('click', () => {
                                 // console.log(lifeline["nominal_data"].ConvictId);
                                 this.$emit('selectConvict', lifeline["nominal_data"].ConvictId);
+                                window.scrollTo(0, 0);
                             })
                             .on("mouseover", function () {
                                 d3.select(this).style("cursor", "pointer");
