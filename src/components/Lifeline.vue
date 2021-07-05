@@ -223,15 +223,15 @@
                     // Draw more lines
                     lifeline["events"].forEach(function (d) {
                         // Line connecting to date
-                        svg.append('line')
-                            .attr("fill", "none")
-                            .attr("stroke", "black")
-                            .attr("stroke-width", 1)
-                            .attr("x1", x(d.dates))
-                            .attr("y1", y(d.yValue) + 16) //+ 4
-                            .attr("x2", d.x)
-                            .attr("y2", y(d.yValue) + 36) // + 20
-                        ;
+                        // svg.append('line')
+                        //     .attr("fill", "none")
+                        //     .attr("stroke", "black")
+                        //     .attr("stroke-width", 1)
+                        //     .attr("x1", x(d.dates))
+                        //     .attr("y1", y(d.yValue) + 16) //+ 4
+                        //     .attr("x2", d.x)
+                        //     .attr("y2", y(d.yValue) + 36) // + 20
+                        // ;
                         // Line connecting to description
                         svg.append('line')
                             .attr("fill", "none")
@@ -500,17 +500,17 @@
 
                     // Draw the date beneath the line
                     // Rotation after https://observablehq.com/@weitinglin/d3-rotating-text-labels
-                    svg.append('g')
-                        .selectAll('dateText')
-                        .data(lifeline["events"])
-                        .enter()
-                        .append("text")
-                        .text(d => niceTimeFormat(d.dates))
-                        .attr('transform', (d) => {
-                            return 'translate( ' + (d.x + 4) + ' , ' + (y(d.yValue)+88) + '),' + 'rotate(-90)';
-                        })
-                        .attr('x', 0)
-                        .attr('y', 0);
+                    // svg.append('g')
+                    //     .selectAll('dateText')
+                    //     .data(lifeline["events"])
+                    //     .enter()
+                    //     .append("text")
+                    //     .text(d => niceTimeFormat(d.dates))
+                    //     .attr('transform', (d) => {
+                    //         return 'translate( ' + (d.x + 4) + ' , ' + (y(d.yValue)+88) + '),' + 'rotate(-90)';
+                    //     })
+                    //     .attr('x', 0)
+                    //     .attr('y', 0);
 
                     // Draw the event description on top of the line
                     svg.append('g')
@@ -536,7 +536,7 @@
                             div.transition()
                                 .duration(200)
                                 .style("opacity", 1);
-                            div.html(d.eventDescription)
+                            div.html(niceTimeFormat(d.dates) + ': ' + d.eventDescription)
                                 .style("left", (d3.event.pageX) + "px")
                                 .style("top", (d3.event.pageY - 50) + "px");
                         })
