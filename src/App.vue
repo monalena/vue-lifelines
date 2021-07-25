@@ -5,6 +5,7 @@
         <div class="col-sm-8 p-4 mb-2">
           <h1 class="Font-weight-bold">LifeLines</h1>
           <h4 class="font-italic font-weight-bold">Explore Convict Lives</h4>
+          <b-button v-if="selectedLifelines.length === 1" class="btn btn-primary" size="sm" v-on:click="renderFace">{{buttonText}}</b-button>
         </div>
         <div class="col-sm-4 p-3 mb-2">
           <div class="form-group row">
@@ -28,7 +29,7 @@
           </div>
           <div class="row justify-content-center">
             <div class="col-sm-6 ml-4">
-              <button type="submit" class="btn btn-primary" v-on:click="selectLifeline">Find Lifeline</button>
+              <b-button type="submit" variant="info" v-on:click="selectLifeline">Find Lifeline</b-button>
             </div>
           </div>
         </div>
@@ -42,8 +43,10 @@
         <Legend></Legend>
       </div>
     </div>
-    <Lifeline @selectVoyage="selectVoyage" @selectPerson="selectPerson" @selectConvict="selectConvict"
+    <Lifeline v-if="showLine" @selectVoyage="selectVoyage" @selectPerson="selectPerson" @selectConvict="selectConvict"
               :selectedLifelines="selectedLifelines"></Lifeline>
+    <Faceline v-else @selectVoyage="selectVoyage" @selectPerson="selectPerson" @selectConvict="selectConvict"
+              :selectedLifelines="selectedLifelines"></Faceline>
   </div>
 </template>
 
@@ -64,6 +67,7 @@ import * as d3 from 'd3';
 import Description from './components/Description.vue';
 import Lifeline from './components/Lifeline.vue';
 import Legend from './components/Legend.vue';
+import Faceline from './components/Faceline.vue';
 
 const factory = new Set([10,13,14]);
 const confinement = new Set([30,31]);
@@ -74,10 +78,13 @@ export default {
   components: {
     Description,
     Lifeline,
+    Faceline,
     Legend
   },
   data() {
     return {
+      buttonText: 'Show Face',
+      showLine: true,
       nominal: [],
       lifelines: {},
       sentences: {},
@@ -93,13 +100,24 @@ export default {
       // Collective Resistance of 18/10/1837 Launceston FF
       // selectedConvictIds: ['5280', '6689', '13293', '4233', '9834', '4041', '4008', '8710', '6782', '9857', '5319', '4057', '4127', '4063', '1954'],
       // selectedConvictIds: [ '4233', '5280'],
-      selectedConvictIds: [ '6772', '12906'],
+      selectedConvictIds: ['6772', '12906'],
       specs: [],
       selectedLifelines: [],
       selectedSentences: [],
     }
   },
   methods: {
+    renderFace: function() {
+      if (this.showLine === false) {
+        this.buttonText = 'Show Face';
+        this.showLine = true;
+      }
+      else {
+        this.buttonText = 'Show Line';
+        this.showLine = false;
+      }
+
+    },
     selectLifeline: function() {
       this.selectedConvictIds = [this.convictId];
       this.findLifeline();
@@ -155,7 +173,7 @@ export default {
           if (!(d.ConvictId in this.lifelines)) {
             this.lifelines[d.ConvictId] = { "nominal_data" : null, "events" : [] , "sentences" : [], "confinement" : []}
           }
-          // this.lifelines[d.ConvictId].push(d);
+          // this.lifelines[d.ConvictId]["events"].push(d);
           // June 21: temporarily take out death event from lifeline, instead added death year in the description
           if (d.Source !== 'DeathsBurialsV4') {
             this.lifelines[d.ConvictId]["events"].push(d);
