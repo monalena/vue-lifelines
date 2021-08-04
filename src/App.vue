@@ -71,6 +71,7 @@ import Faceline from './components/Faceline.vue';
 
 const factory = new Set([10,13,14]);
 const confinement = new Set([30,31]);
+const otherSentences = new Set([22,40,41,42,51,52]);
 
 
 export default {
@@ -96,11 +97,11 @@ export default {
       // Elizabeth Studham and Elizabeth Parker
       // selectedConvictIds: ['8717', '5304'],
       // Insubordination charge of 6/5/1839 Cascades Factory
-      // selectedConvictIds: ["9615","9614","9900","9284","6782","8647","13065","12904","9552","9525","12782","12846","7924","6071","9070","H299At","12842","1210","10023","M269At","1976","1163","12840","12789","12870","9542","6772","4074","12906","6064","12776","9847","1911","679","T135At","12856","8624","S328At","S329At","9967","1910","1901"],
+      selectedConvictIds: ["9615","9614","9900","9284","6782","8647","13065","12904","9552","9525","12782","12846","7924","6071","9070","H299At","12842","1210","10023","M269At","1976","1163","12840","12789","12870","9542","6772","4074","12906","6064","12776","9847","1911","679","T135At","12856","8624","S328At","S329At","9967","1910","1901"],
       // Collective Resistance of 18/10/1837 Launceston FF
       // selectedConvictIds: ['5280', '6689', '13293', '4233', '9834', '4041', '4008', '8710', '6782', '9857', '5319', '4057', '4127', '4063', '1954'],
       // selectedConvictIds: [ '4233', '5280'],
-      selectedConvictIds: ['6772', '12906'],
+      // selectedConvictIds: ['6772', '12906'],
       specs: [],
       selectedLifelines: [],
       selectedSentences: [],
@@ -171,7 +172,8 @@ export default {
       data.forEach((d) => {
         if (d.ConvictId !== "") {
           if (!(d.ConvictId in this.lifelines)) {
-            this.lifelines[d.ConvictId] = { "nominal_data" : null, "events" : [] , "sentences" : [], "confinement" : []}
+            this.lifelines[d.ConvictId] = { "nominal_data" : null, "events" : [] , "sentences" : [],
+              "confinement" : [], "repercussion": []}
           }
           // this.lifelines[d.ConvictId]["events"].push(d);
           // June 21: temporarily take out death event from lifeline, instead added death year in the description
@@ -262,6 +264,9 @@ export default {
           }
           if (confinement.has(d.numericCode) && !isNaN(d.cleanEndDate)){
             this.lifelines[d.ConvictId]["confinement"].push(d);
+          }
+          if (otherSentences.has(d.numericCode)){
+            this.lifelines[d.ConvictId]["repercussion"].push(d);
           }
 
         }

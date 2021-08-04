@@ -7,6 +7,8 @@
 <script>
     import * as d3 from 'd3';
 
+     const spanRepercuss = new Set([40,51,52]);
+
     export default {
         name: 'Lifeline',
         props: ['selectedLifelines'],
@@ -85,6 +87,76 @@
                 p.attr('d', "M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48z");
                 return g;
             },
+            // helper function to draw scissors (for head shaven/heir cut) onto lifelines vis
+            drawScissors(svg, x, y) {
+                let g = svg.append('g');
+                g.attr('transform','translate('+x+','+y+') scale(0.025 0.025) ');
+                g.append('rect')
+                    .attr("width", 512)
+                    .attr("height", 512)
+                    .attr("x", 0)
+                    .attr("y", 0)
+                    .attr("fill", "transparent");
+                let p = g.append('path');
+                p.attr('fill', '#000000');
+                p.attr('d', "M278.06 256L444.48 89.57c4.69-4.69 4.69-12.29 0-16.97-32.8-32.8-85.99-32.8-118.79 0L210.18 188.12l-24.86-24.86c4.31-10.92 6.68-22.81 6.68-35.26 0-53.02-42.98-96-96-96S0 74.98 0 128s42.98 96 96 96c4.54 0 8.99-.32 13.36-.93L142.29 256l-32.93 32.93c-4.37-.61-8.83-.93-13.36-.93-53.02 0-96 42.98-96 96s42.98 96 96 96 96-42.98 96-96c0-12.45-2.37-24.34-6.68-35.26l24.86-24.86L325.69 439.4c32.8 32.8 85.99 32.8 118.79 0 4.69-4.68 4.69-12.28 0-16.97L278.06 256zM96 160c-17.64 0-32-14.36-32-32s14.36-32 32-32 32 14.36 32 32-14.36 32-32 32zm0 256c-17.64 0-32-14.36-32-32s14.36-32 32-32 32 14.36 32 32-14.36 32-32 32z");
+                return g;
+            },
+            // helper function to draw coins (for fines) onto lifelines vis
+            drawCoins(svg, x, y) {
+                let g = svg.append('g');
+                g.attr('transform','translate('+x+','+y+') scale(0.025 0.025) ');
+                g.append('rect')
+                    .attr("width", 512)
+                    .attr("height", 512)
+                    .attr("x", 0)
+                    .attr("y", 0)
+                    .attr("fill", "transparent");
+                let p = g.append('path');
+                p.attr('fill', '#000000');
+                p.attr('d', "M0 405.3V448c0 35.3 86 64 192 64s192-28.7 192-64v-42.7C342.7 434.4 267.2 448 192 448S41.3 434.4 0 405.3zM320 128c106 0 192-28.7 192-64S426 0 320 0 128 28.7 128 64s86 64 192 64zM0 300.4V352c0 35.3 86 64 192 64s192-28.7 192-64v-51.6c-41.3 34-116.9 51.6-192 51.6S41.3 334.4 0 300.4zm416 11c57.3-11.1 96-31.7 96-55.4v-42.7c-23.2 16.4-57.3 27.6-96 34.5v63.6zM192 160C86 160 0 195.8 0 240s86 80 192 80 192-35.8 192-80-86-80-192-80zm219.3 56.3c60-10.8 100.7-32 100.7-56.3v-42.7c-35.5 25.1-96.5 38.6-160.7 41.8 29.5 14.3 51.2 33.5 60 57.2z");
+                return g;
+            },
+            // helper function to draw bread (for bread and water sentences) onto lifelines vis
+            drawBread(svg, x, y) {
+                let g = svg.append('g');
+                g.attr('transform','translate('+x+','+y+') scale(0.02 0.02) ');
+                let p = g.append('path');
+                p.attr('fill', '#000000');
+                p.attr('d', "M288 0C108 0 0 93.4 0 169.14 0 199.44 24.24 224 64 224v256c0 17.67 16.12 32 36 32h376c19.88 0 36-14.33 36-32V224c39.76 0 64-24.56 64-54.86C576 93.4 468 0 288 0z"
+                );
+                return g;
+            },
+            // helper function to draw collar (for iron collar) onto lifelines vis
+            drawCollar(svg, x, y) {
+                let g = svg.append('g');
+                g.attr('transform','translate('+x+','+y+') scale(0.02 0.02) ');
+                g.append('rect')
+                    .attr("width", 512)
+                    .attr("height", 512)
+                    .attr("x", 0)
+                    .attr("y", 0)
+                    .attr("fill", "transparent");
+                let p = g.append('path');
+                p.attr('fill', '#000000');
+                p.attr('d', "M288 39.056v16.659c0 10.804 7.281 20.159 17.686 23.066C383.204 100.434 440 171.518 440 256c0 101.689-82.295 184-184 184-101.689 0-184-82.295-184-184 0-84.47 56.786-155.564 134.312-177.219C216.719 75.874 224 66.517 224 55.712V39.064c0-15.709-14.834-27.153-30.046-23.234C86.603 43.482 7.394 141.206 8.003 257.332c.72 137.052 111.477 246.956 248.531 246.667C393.255 503.711 504 392.788 504 256c0-115.633-79.14-212.779-186.211-240.236C302.678 11.889 288 23.456 288 39.056z");
+                return g;
+            },
+            // helper function to draw clock (for sentence extentions) onto lifelines vis
+            drawClock(svg, x, y) {
+                let g = svg.append('g');
+                g.attr('transform','translate('+x+','+y+') scale(0.02 0.02) ');
+                g.append('rect')
+                    .attr("width", 512)
+                    .attr("height", 512)
+                    .attr("x", 0)
+                    .attr("y", 0)
+                    .attr("fill", "transparent");
+                let p = g.append('path');
+                p.attr('fill', '#000000');
+                p.attr('d', "m 504,255.53099 c 0.253,136.64 -111.18,248.37199 -247.82,248.46801 -59.015,0.042 -113.223,-20.53002 -155.822,-54.91101 -11.077,-8.94 -11.905,-25.541 -1.839,-35.607 l 11.267,-11.267 c 8.609,-8.609 22.353,-9.551 31.891,-1.984 31.385,24.905 71.104,39.77 114.323,39.77 101.705,0 184,-82.311 184,-184 0,-101.705 -82.311,-183.999993 -184,-183.999993 -48.814,0 -93.149,18.969003 -126.068,49.932003 l 50.754,50.75399 c 10.08,10.08 2.941,27.314 -11.313,27.314 H 24 C 15.163,199.99999 8,192.837 8,184 V 38.626999 C 8,24.373 25.234,17.234 35.314,27.312999 L 84.686,76.684996 C 129.209,34.135999 189.552,8 256,8 392.81,8 503.747,118.78 504,255.53099 Z m -180.912,78.784 9.823,-12.63 c 8.138,-10.463 6.253,-25.542 -4.21,-33.679 L 288,256.34899 V 152 c 0,-13.255 -10.745,-24 -24,-24 h -16 c -13.255,0 -24,10.745 -24,24 v 135.65099 l 65.409,50.874 c 10.463,8.137 25.541,6.253 33.679,-4.21 z");
+                return g;
+            },
 
             // draw the chart
             createChart(data) {
@@ -119,6 +191,16 @@
                     });
                     lifeline["confinement"].forEach(function(d) {
                         d.yValue = 0.4+lifeline_idx;
+                    });
+                    lifeline["repercussion"].forEach(function(d) {
+                        d.yValue = 0.4+lifeline_idx;
+                        d.dates =  parseTime(d.Date);
+                        if (d.dates < min_date) {
+                            min_date = d.dates;
+                        }
+                        if (d.dates > max_date) {
+                            max_date = d.dates;
+                        }
                     });
 
                     lifeline_idx++;
@@ -390,6 +472,56 @@
                                 .style("opacity", 0);
                         });
 
+                    lifeline["repercussion"].forEach( (d) => {
+                        var symbol, symX, symY;
+                        if (d.numericCode === 40) {
+                            symX = x(d.dates) - 6;
+                            symY = y(d.yValue) + 20;
+                            symbol = this.drawBread(svg, symX, symY);
+                        } else if (d.numericCode === 41) {
+                            symX = x(d.dates) + 6;
+                            symY = y(d.yValue) + 20;
+                            symbol = this.drawScissors(svg, symX, symY);
+                        } else if (d.numericCode === 42) {
+                            symX = x(d.dates) + 6;
+                            symY = y(d.yValue) + 20;
+                            symbol = this.drawCollar(svg, symX, symY);
+                        } else if (d.numericCode === 22) {
+                            symX = x(d.dates) - 6;
+                            symY = y(d.yValue) + 20;
+                            symbol = this.drawCoins(svg, symX, symY);
+                        }  else if (d.numericCode === 51 || d.numericCode === 52) {
+                            symX = x(d.dates) - 0;
+                            symY = y(d.yValue) + 20;
+                            symbol = this.drawClock(svg, symX, symY);
+                        }
+                        symbol.on("mouseover", function() {
+                            // symbol.attr('transform', 'translate(' + (symX - 2) + ',' + (symY - 2) + ') scale(0.035 0.035)');
+
+                            div.transition()
+                                .duration(200)
+                                .style("opacity", 1);
+                            div.html(function () {
+                                if (spanRepercuss.has(d.numericCode) && (d.Days !== "")) {
+                                    return d.Days + " days " + d.SentenceCat;
+                                } else if (d.numericCode === 41) {
+                                    return "head shaved";
+                                } else {
+                                    return d.SentenceCat;
+                                }
+                            })
+                                .style("left", (d3.event.pageX) + "px")
+                                .style("top", (d3.event.pageY + 12) + "px");
+                        })
+                            .on("mouseout", function() {
+                                div.transition()
+                                    .duration(500)
+                                    .style("opacity", 0);
+                                // symbol.attr('transform', 'translate(' + symX + ',' + symY + ') scale(0.025 0.025)');
+
+                            });
+                    });
+
 
                     lifeline["events"].forEach( (d) => {
                         var symbol, symX, symY;
@@ -438,11 +570,12 @@
 
                            })
                            .on("mouseover", function() {
-                               d3.select(this).style("cursor", "pointer");
+
                                if (d.VoyageId !== '' || d.Person !== '') {
                                    // console.log("d", d);
                                    // d3.select(this).attr('r', 8);
                                    symbol.attr('transform','translate('+(symX - 2)+','+(symY - 2)+') scale(0.035 0.035)');
+                                   d3.select(this).style("cursor", "pointer");
                                }
                            })
                            .on("mouseout", function() {
@@ -536,7 +669,7 @@
                             div.transition()
                                 .duration(200)
                                 .style("opacity", 1);
-                            div.html(niceTimeFormat(d.dates) + ': d.eventDescription')
+                            div.html(niceTimeFormat(d.dates) + ': ' + d.eventDescription)
                                 .style("left", (d3.event.pageX) + "px")
                                 .style("top", (d3.event.pageY - 50) + "px");
                         })
