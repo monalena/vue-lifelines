@@ -464,7 +464,7 @@
                                     return d.Days + " days " + d.SentenceCat + " (sentence extended)";
                                 }})
                                 .style("left", (d3.event.pageX) + "px")
-                                .style("top", (d3.event.pageY - 40) + "px");
+                                .style("top", (d3.event.pageY + 10) + "px");
                         })
                         .on("mouseout", function () {
                             div.transition()
@@ -566,17 +566,31 @@
                                } else if (d.Person !== '') {
                                    // console.log("person", d.Person);
                                    this.$emit('selectPerson', d.Person);
+                               } else if (d.IncidentId !== '') {
+                                   // console.log("person", d.Person);
+                                   this.$emit('selectIncident', d.IncidentId);
                                }
-
+                                div.transition()
+                                    .duration(200)
+                                    .style("opacity", 0);
                            })
                            .on("mouseover", function() {
-
                                if (d.VoyageId !== '' || d.Person !== '') {
                                    // console.log("d", d);
                                    // d3.select(this).attr('r', 8);
                                    symbol.attr('transform','translate('+(symX - 2)+','+(symY - 2)+') scale(0.035 0.035)');
                                    d3.select(this).style("cursor", "pointer");
                                }
+                               if(d.IncidentId !== '') {
+                                   d3.select(this).style("cursor", "pointer");
+                                   symbol.attr('r', function () { return 8;})
+                               }
+                               div.transition()
+                                   .duration(200)
+                                   .style("opacity", 1);
+                               div.html(niceTimeFormat(d.dates) + ': ' + d.eventDescription)
+                                   .style("left", (d3.event.pageX) + "px")
+                                   .style("top", (d3.event.pageY - 50) + "px");
                            })
                            .on("mouseout", function() {
                                d3.select(this).style("cursor", "default");
@@ -584,6 +598,12 @@
                                    // d3.select(this).attr('r', 5);
                                    symbol.attr('transform', 'translate(' + symX + ',' + symY + ') scale(0.025 0.025)');
                                }
+                               if(d.IncidentId !== '') {
+                                   symbol.attr('r', function () { return 5;})
+                               }
+                               div.transition()
+                                   .duration(200)
+                                   .style("opacity", 0);
                            });
                     });
 
