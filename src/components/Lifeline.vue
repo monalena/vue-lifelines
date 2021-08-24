@@ -157,6 +157,22 @@
                 p.attr('d', "m 504,255.53099 c 0.253,136.64 -111.18,248.37199 -247.82,248.46801 -59.015,0.042 -113.223,-20.53002 -155.822,-54.91101 -11.077,-8.94 -11.905,-25.541 -1.839,-35.607 l 11.267,-11.267 c 8.609,-8.609 22.353,-9.551 31.891,-1.984 31.385,24.905 71.104,39.77 114.323,39.77 101.705,0 184,-82.311 184,-184 0,-101.705 -82.311,-183.999993 -184,-183.999993 -48.814,0 -93.149,18.969003 -126.068,49.932003 l 50.754,50.75399 c 10.08,10.08 2.941,27.314 -11.313,27.314 H 24 C 15.163,199.99999 8,192.837 8,184 V 38.626999 C 8,24.373 25.234,17.234 35.314,27.312999 L 84.686,76.684996 C 129.209,34.135999 189.552,8 256,8 392.81,8 503.747,118.78 504,255.53099 Z m -180.912,78.784 9.823,-12.63 c 8.138,-10.463 6.253,-25.542 -4.21,-33.679 L 288,256.34899 V 152 c 0,-13.255 -10.745,-24 -24,-24 h -16 c -13.255,0 -24,10.745 -24,24 v 135.65099 l 65.409,50.874 c 10.463,8.137 25.541,6.253 33.679,-4.21 z");
                 return g;
             },
+            // helper function to draw clock (for sentence extentions) onto lifelines vis
+            drawBaby(svg, x, y) {
+                let g = svg.append('g');
+                g.attr('transform','translate('+x+','+y+') scale(0.03 0.03) ');
+                g.append('rect')
+                    .attr("width", 512)
+                    .attr("height", 512)
+                    .attr("x", 0)
+                    .attr("y", 0)
+                    .attr("fill", "transparent");
+                let p = g.append('path');
+                p.attr('fill', '#000000');
+                p.attr('d', "M192 160c44.2 0 80-35.8 80-80S236.2 0 192 0s-80 35.8-80 80 35.8 80 80 80zm-53.4 248.8l25.6-32-61.5-51.2L56.8 383c-11.4 14.2-11.7 34.4-.8 49l48 64c7.9 10.5 19.9 16 32 16 8.3 0 16.8-2.6 24-8 17.7-13.2 21.2-38.3 8-56l-29.4-39.2zm142.7-83.2l-61.5 51.2 25.6 32L216 448c-13.2 17.7-9.7 42.8 8 56 7.2 5.4 15.6 8 24 8 12.2 0 24.2-5.5 32-16l48-64c10.9-14.6 10.6-34.8-.8-49l-45.9-57.4zM376.7 145c-12.7-18.1-37.6-22.4-55.7-9.8l-40.6 28.5c-52.7 37-124.2 37-176.8 0L63 135.3C44.9 122.6 20 127 7.3 145-5.4 163.1-1 188 17 200.7l40.6 28.5c17 11.9 35.4 20.9 54.4 27.9V288h160v-30.8c19-7 37.4-16 54.4-27.9l40.6-28.5c18.1-12.8 22.4-37.7 9.7-55.8z");
+                return g;
+            },
+
 
             // draw the chart
             createChart(data) {
@@ -302,31 +318,6 @@
                             })
                         );
 
-                    // Draw more lines
-                    lifeline["events"].forEach(function (d) {
-                        // Line connecting to date
-                        // svg.append('line')
-                        //     .attr("fill", "none")
-                        //     .attr("stroke", "black")
-                        //     .attr("stroke-width", 1)
-                        //     .attr("x1", x(d.dates))
-                        //     .attr("y1", y(d.yValue) + 16) //+ 4
-                        //     .attr("x2", d.x)
-                        //     .attr("y2", y(d.yValue) + 36) // + 20
-                        // ;
-                        // Line connecting to description
-                        svg.append('line')
-                            .attr("fill", "none")
-                            .attr("stroke", "black")
-                            .attr("stroke-width", 1)
-                            .attr("x1", x(d.dates))
-                            .attr("y1", y(d.yValue) - 9)
-                            .attr("x2", d.x)
-                            .attr("y2", y(d.yValue) - 25)
-                        ;
-                    });
-
-
                     // Draw line to extend lifeline to left (before trial)
                     svg.append('line')
                         .attr("fill", "none")
@@ -350,6 +341,35 @@
                         .attr("y2", y(lifeline["events"][lifeline["events"].length - 1 ].yValue))
                         .style("stroke-dasharray", ("4, 4"))
                     ;
+
+                    // Draw more lines
+                    lifeline["events"].forEach(function (d) {
+                        // Line connecting to date
+                        // svg.append('line')
+                        //     .attr("fill", "none")
+                        //     .attr("stroke", "black")
+                        //     .attr("stroke-width", 1)
+                        //     .attr("x1", x(d.dates))
+                        //     .attr("y1", y(d.yValue) + 16) //+ 4
+                        //     .attr("x2", d.x)
+                        //     .attr("y2", y(d.yValue) + 36) // + 20
+                        // ;
+
+                        // Line connecting to description
+                        if (d.Source !== "FAS DB Relations") {
+                            svg.append('line')
+                                .attr("fill", "none")
+                                .attr("stroke", "black")
+                                .attr("stroke-width", 1)
+                                .attr("x1", x(d.dates))
+                                .attr("y1", y(d.yValue) - 9)
+                                .attr("x2", d.x)
+                                .attr("y2", y(d.yValue) - 25)
+                            ;
+                        }
+
+                    });
+
 
                     //duplicate line underneath sentence rectangles
                     svg.append("path")
@@ -541,6 +561,10 @@
                             symX = x(d.dates) - 0;
                             symY = y(d.yValue) - 13;
                             symbol = this.drawSquare(svg, symX, symY);
+                        } else if (d.Source === "FAS DB Relations") {
+                            symX = x(d.dates) - 0;
+                            symY = y(d.yValue) + 50;
+                            symbol = this.drawBaby(svg, symX, symY);
                         } else {
                                 symbol = svg.append('circle')
                                     .attr('cx', function () {
@@ -666,18 +690,20 @@
                     //     .attr('y', 0);
 
                     // Draw the event description on top of the line
-                    svg.append('g')
+                        svg.append('g')
                         .selectAll('eventText')
                         .data(lifeline["events"])
                         .enter()
                         .append('text')
                         .text(d => {
-                            if (d.eventDescription.length >= 50 && this.selectedLifelines.length > 1) {
-                                const short = d.eventDescription.substring(0, 50);
-                                const pos = short.lastIndexOf(" ");
-                                return d.eventDescription.substring(0, pos) + ' ...';
-                            } else {
-                                return d.eventDescription;
+                            if (d.Source !== "FAS DB Relations") {
+                                if (d.eventDescription.length >= 50 && this.selectedLifelines.length > 1) {
+                                    const short = d.eventDescription.substring(0, 50);
+                                    const pos = short.lastIndexOf(" ");
+                                    return d.eventDescription.substring(0, pos) + ' ...';
+                                } else {
+                                    return d.eventDescription;
+                                }
                             }
                         })
                         .attr('transform', (d) => {
