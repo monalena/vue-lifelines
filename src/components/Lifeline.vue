@@ -563,7 +563,7 @@
                             symbol = this.drawSquare(svg, symX, symY);
                         } else if (d.Source === "FAS DB Relations") {
                             symX = x(d.dates) - 0;
-                            symY = y(d.yValue) + 50;
+                            symY = y(d.yValue) + 45;
                             symbol = this.drawBaby(svg, symX, symY);
                         } else {
                                 symbol = svg.append('circle')
@@ -804,6 +804,7 @@
         background-color: ivory;
         border-radius: 5px;
         padding: 5px;
+        pointer-events: none;
 
 
     }

@@ -8,18 +8,18 @@
                     <b-button v-if="selectedLifelines.length === 1" class="btn btn-primary" size="sm" v-on:click="renderFace">{{buttonText}}</b-button>
                 </div>
                 <div class="col-sm-4 p-3 mb-2">
-                    <div class="form-group row">
-                        <label for="GivenName" class="col-sm-5 col-for-label mt-2">Enter Given Name</label>
-                        <div class="col-sm-6">
-                            <input type="text" class="form-control" id="givenName" placeholder="Given Name">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="FamilyName" class="col-sm-5 col-for-label mt-2">Enter Family Name</label>
-                        <div class="col-sm-6">
-                            <input type="text" class="form-control" id="familyName" placeholder="Family Name">
-                        </div>
-                    </div>
+<!--                    <div class="form-group row">-->
+<!--                        <label for="GivenName" class="col-sm-5 col-for-label mt-2">Enter Given Name</label>-->
+<!--                        <div class="col-sm-6">-->
+<!--                            <input type="text" class="form-control" id="givenName" placeholder="Given Name">-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="form-group row">-->
+<!--                        <label for="FamilyName" class="col-sm-5 col-for-label mt-2">Enter Family Name</label>-->
+<!--                        <div class="col-sm-6">-->
+<!--                            <input type="text" class="form-control" id="familyName" placeholder="Family Name">-->
+<!--                        </div>-->
+<!--                    </div>-->
                     <div class="form-group row">
                         <label for="ConvictId" class="col-sm-5 col-for-label mt-2">Enter Convict Id</label>
                         <div class="col-sm-6">
